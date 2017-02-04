@@ -1,6 +1,8 @@
 package com.blog.models;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -9,7 +11,9 @@ import javax.persistence.*;
  */
 @Entity
 @Data
-public class Category extends CommonModel{
+@EqualsAndHashCode(callSuper = false)
+@ToString(callSuper = true)
+public class Category extends BaseEntity{
 
     @Column(nullable = false, length = 100, unique = true)
     private String name;
