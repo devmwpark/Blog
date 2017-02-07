@@ -20,9 +20,8 @@ public class Category extends BaseEntity{
     @Column(nullable = false, length = 100, unique = true)
     private String name;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false)
     private Integer depth;
 
-    @Column(length = 10)
-    private Long parentId;
+    private Long parent;
 }
