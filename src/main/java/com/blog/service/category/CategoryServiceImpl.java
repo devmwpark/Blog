@@ -29,8 +29,28 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Optional<Category> getCategory(String name) {
+    public Optional<Category> updateCategory(Category category) {
+        return Optional.ofNullable(categoryRepository.save(category));
+    }
+
+    @Override
+    public void deleteCategory(Long id) {
+        categoryRepository.delete(id);
+    }
+
+    @Override
+    public Optional<Category> getCategoryByName(String name) {
         return categoryRepository.findByName(name);
+    }
+
+    @Override
+    public List<Category> getCategoryByDepth(Integer depth) {
+        return categoryRepository.findByDepth(depth);
+    }
+
+    @Override
+    public List<Category> getCategoryByParent(Long parent) {
+        return categoryRepository.findByParent(parent);
     }
 
     @Override

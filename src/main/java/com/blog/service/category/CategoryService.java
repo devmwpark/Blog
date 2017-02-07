@@ -9,7 +9,11 @@ import java.util.Optional;
  * @author devmwpark[devmwpark@gmail.com]
  */
 public interface CategoryService {
-    Optional<Category> createCategory(Category category);
-    Optional<Category> getCategory(String name);
     List<Category> allCategory();
+    Optional<Category> getCategoryByName(String name);
+    List<Category> getCategoryByDepth(Integer depth);
+    List<Category> getCategoryByParent(Long parent);
+    Optional<Category> createCategory(Category category);
+    Optional<Category> updateCategory(Category category);
+    void deleteCategory(Long id);
 }
