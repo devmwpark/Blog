@@ -7,7 +7,7 @@ import lombok.Getter;
  * @author devmwpark[devmwpark@gmail.com]
  */
 @AllArgsConstructor
-public class ResourceCreationErrorsException extends RuntimeException {
+public class ResourceErrorsException extends RuntimeException {
 
     @Getter
     String message;

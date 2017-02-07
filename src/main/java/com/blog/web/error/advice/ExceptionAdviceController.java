@@ -1,6 +1,6 @@
 package com.blog.web.error.advice;
 
-import com.blog.web.error.exception.ResourceCreationErrorsException;
+import com.blog.web.error.exception.ResourceErrorsException;
 import com.blog.web.error.support.BindingResultResponse;
 import com.blog.web.error.exception.BindingResultHasErrorsException;
 import com.blog.web.error.enumerate.ErrorCode;
@@ -8,6 +8,7 @@ import com.blog.web.error.support.RequestResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -50,10 +51,19 @@ public class ExceptionAdviceController {
         );
     }
 
-    @ExceptionHandler(ResourceCreationErrorsException.class)
-    public ResponseEntity ResourceCreationErrorsException(ResourceCreationErrorsException e){
+    @ExceptionHandler(ResourceErrorsException.class)
+    public ResponseEntity ResourceCreationErrorsException(ResourceErrorsException e){
         return new ResponseEntity<>(
-                new RequestResponse(e.getMessage(),ErrorCode.RESOURCE_CREATE_ERROR).createResponse(),
+                new RequestResponse(e.getMessage(),ErrorCode.INTERNAL_SERVER_ERROR).createResponse(),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    public ResponseEntity EmptyResultDataAccessException(EmptyResultDataAccessException e){
+        log.debug("EmptyResultDataAccessException :: ", e);
+        return new ResponseEntity<>(
+                new RequestResponse("잘못된 리소스 접근입니다.",ErrorCode.INTERNAL_SERVER_ERROR).createResponse(),
                 HttpStatus.INTERNAL_SERVER_ERROR
         );
     }

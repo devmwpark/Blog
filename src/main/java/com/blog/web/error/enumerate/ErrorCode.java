@@ -11,8 +11,7 @@ import lombok.Getter;
 public enum ErrorCode {
 
     BAD_REQUEST_ERROR("BAD_REQUEST_ERROR"),
-    INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR"),
-    RESOURCE_CREATE_ERROR("RESOURCE_CREATE_ERROR");
+    INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR");
 
     @Getter
     public String errorCode;
