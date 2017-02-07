@@ -1,34 +1,40 @@
 package com.blog.dto;
 
+import com.blog.models.enumerate.AccessLevel;
 import lombok.Data;
+
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+
 
 /**
  * @author devmwpark[devmwpark@gmail.com]
  */
 
-public class CategoryDto {
+
+public class OwnerDto {
 
     @Data
-    public static class Create {
+    public static class Create{
+
+        @Email
         @NotBlank
+        private String email;
+
+        @NotBlank
+        private String password;
+
         private String name;
-        @NotNull
-        private Integer depth;
-        private Long parent;
     }
 
     @Data
     public static class Read{
-        private Long id;
+        private String email;
         private String name;
-        private Integer depth;
-        private Long parent;
+        private AccessLevel accessLevel;
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
     }
-
 }
