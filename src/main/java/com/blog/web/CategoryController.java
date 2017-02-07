@@ -4,7 +4,7 @@ import com.blog.dto.CategoryDto;
 import com.blog.models.Category;
 import com.blog.service.category.CategoryService;
 
-import com.blog.web.error.exception.ResourceCreationErrorsException;
+import com.blog.web.error.exception.ResourceErrorsException;
 import lombok.extern.slf4j.Slf4j;
 
 import org.modelmapper.ModelMapper;
@@ -18,7 +18,6 @@ import javax.validation.Valid;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  *  @author devmwpark[devmwpark@gmail.com]
@@ -40,7 +39,7 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity allCategory(){
+    public ResponseEntity getCategories(){
 
         final List<Category> read = categoryService.allCategory();
 
@@ -48,17 +47,13 @@ public class CategoryController {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
 
-        final List<CategoryDto.Read> categoryList
-                                        = read.stream()
-                                                .map( category -> modelMapper.map(category, CategoryDto.Read.class) )
-                                                .collect(Collectors.toList());
-
-        return new ResponseEntity(categoryList,HttpStatus.OK);
+        return new ResponseEntity(read,HttpStatus.OK);
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity getCategory(@PathVariable String name){
-        Optional<Category> read = categoryService.getCategory(name);
+    public ResponseEntity getCategoryByName(@PathVariable String name){
+
+        final Optional<Category> read = categoryService.getCategoryByName(name);
 
         if(read.isPresent()){
             final CategoryDto.Read readDto = modelMapper.map(read.get(), CategoryDto.Read.class);
@@ -66,6 +61,30 @@ public class CategoryController {
         }
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/depth/{depth}")
+    public ResponseEntity getCategoryByDepthAndParent(@PathVariable Integer depth){
+
+        final List<Category> read = categoryService.getCategoryByDepth(depth);
+
+        if(read.isEmpty()){
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity(read, HttpStatus.OK);
+    }
+
+    @GetMapping("/parent/{parent}")
+    public ResponseEntity getCategoryByDepthAndParent(@PathVariable Long parent){
+
+        final List<Category> read = categoryService.getCategoryByParent(parent);
+
+        if(read.isEmpty()){
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity(read, HttpStatus.OK);
     }
 
     @PostMapping
@@ -80,7 +99,29 @@ public class CategoryController {
             return new ResponseEntity<>(readDto, HttpStatus.OK);
         }
 
-        throw new ResourceCreationErrorsException("요청하신 리소스 생성에 실패 하였습니다.");
+        log.debug("category create failed... ");
+        throw new ResourceErrorsException("요청하신 리소스 생성에 실패 하였습니다.");
+    }
+
+    @PutMapping
+    public ResponseEntity modifyCategory(@RequestBody @Valid final CategoryDto.Create updateModel
+                                                                    , BindingResult bindingResult ){
+        final Optional<Category> updated =
+                categoryService.updateCategory(modelMapper.map(updateModel, Category.class));
+
+        if(updated.isPresent()){
+            final CategoryDto.Read readDto = this.modelMapper.map(updated.get(), CategoryDto.Read.class);
+            return new ResponseEntity<>(readDto, HttpStatus.OK);
+        }
+
+        log.debug("category update failed... ");
+        throw new ResourceErrorsException("요청하신 리소스 수정에 실패 하였습니다.");
+    }
+
+    @DeleteMapping("/id/{id}")
+    public ResponseEntity deleteCategory(@PathVariable Long id){
+        categoryService.deleteCategory(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }
